@@ -106,6 +106,7 @@ func createTodo(c *fiber.Ctx) error {
 	return c.Status(201).JSON(todo)
 }
 
+// Update todos
 func updateTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
 	objectID, err := primitive.ObjectIDFromHex(id)
@@ -114,8 +115,8 @@ func updateTodo(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid todo ID"})
 	}
 
-	filter := bson.M{"_id":objectID}
-	update := bson.M{"$set":bson.M{"Completed": true}}
+	filter := bson.M{"_id": objectID}
+	update := bson.M{"$set": bson.M{"Completed": true}}
 
 	_, err = collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
@@ -123,6 +124,8 @@ func updateTodo(c *fiber.Ctx) error {
 	}
 	return c.Status(200).JSON(fiber.Map{"success": true})
 }
+
+// Delete todos
 func deleteTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -132,7 +135,7 @@ func deleteTodo(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid todo ID"})
 	}
 
-	filter := bson.M{"_id":objectID}
+	filter := bson.M{"_id": objectID}
 	_, err = collection.DeleteOne(context.Background(), filter)
 
 	if err != nil {
